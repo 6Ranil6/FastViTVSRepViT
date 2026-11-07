@@ -1,0 +1,19 @@
+{
+  "platform": "macOS ExecuTorch",
+  "models": {
+    "fastvit": {
+      "images": 102,
+      "matches_pytorch_top1": 102,
+      "max_abs_error_vs_pytorch": 0.00019073486328125,
+      "correct": 92,
+      "pte_sha256": "fc85fafd6f924aee62f25fe8531333ed379e3c88ce32cff1d57fc58c489890ac"
+    },
+    "repvit": {
+      "images": 102,
+      "matches_pytorch_top1": 102,
+      "max_abs_error_vs_pytorch": 2.384185791015625e-05,
+      "correct": 87,
+      "pte_sha256": "bd2c9579bc6a43cacbca6420c13cf89d30bfa038c7d7aa14790f3c421b53e108"
+    }
+  }
+}

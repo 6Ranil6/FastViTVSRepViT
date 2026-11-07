@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+.pytest_cache/
+data/
+/runs/*
+!/runs/report/
+/runs/report/*
+!/runs/report/desktop_bundle_check.json
+exports/
+.cache/
+.tools/
+android/.gradle/
+android/local.properties
+**/build/
+android/app/src/main/assets/bundle/
+*.log

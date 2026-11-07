@@ -1,0 +1,25 @@
+{
+  "models": {
+    "fastvit": "fastvit_sa12.apple_dist_in1k",
+    "repvit": "repvit_m0_9.dist_450e_in1k"
+  },
+  "seed": 42,
+  "image_size": 224,
+  "batch_size": 8,
+  "workers": 0,
+  "head_epochs": 3,
+  "finetune_epochs": 10,
+  "head_lr": 0.001,
+  "finetune_lr": 5e-05,
+  "weight_decay": 0.01,
+  "mean": [
+    0.485,
+    0.456,
+    0.406
+  ],
+  "std": [
+    0.229,
+    0.224,
+    0.225
+  ]
+}
