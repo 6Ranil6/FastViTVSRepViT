@@ -1,6 +1,7 @@
 import argparse
 import shutil
 import torch
+from executorch.runtime import Runtime
 from PIL import Image
 from .core import *
 
@@ -29,7 +30,6 @@ def main():
     bundle=ROOT/'android/app/src/main/assets/bundle'
     bundle.mkdir(parents=True,exist_ok=True)
     images=[]
-    from executorch.runtime import Runtime
     programs={k:Runtime.get().load_program(str(v/f'{k}.pte')) for k,v in exports.items()}
     methods={k:v.load_method('forward') for k,v in programs.items()}
     pre=image_transform(cfg,pixels=True)

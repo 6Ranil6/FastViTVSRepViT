@@ -4,7 +4,11 @@ import time
 import os
 import sys
 import torch
+from executorch.backends.xnnpack.partition.xnnpack_partitioner import XnnpackPartitioner
+from executorch.exir import to_edge_transform_and_lower
+from executorch.runtime import Runtime
 from timm.utils import reparameterize_model
+from torch.utils.flop_counter import FlopCounterMode
 from torchvision.ops.misc import FrozenBatchNorm2d
 from .core import *
 
@@ -37,9 +41,6 @@ def main():
     p.add_argument('--output-dir', type=Path, help='Separate export directory for an independent experiment')
     args = p.parse_args(); torch.set_num_threads(4)
     os.environ['PATH'] = str(Path(sys.executable).parent) + os.pathsep + os.environ.get('PATH', '')
-    from executorch.exir import to_edge_transform_and_lower
-    from executorch.backends.xnnpack.partition.xnnpack_partitioner import XnnpackPartitioner
-    from executorch.runtime import Runtime
     original, ckpt = load_model(args.checkpoint); cfg = ckpt['config']; key = ckpt['model']
     model = deploy_model(original, key)
     data = Flowers('val', cfg)
@@ -60,7 +61,6 @@ def main():
     max_error = max((a-b).abs().max().item() for a,b in zip(reference, actual))
     for a,b in zip(reference, actual): torch.testing.assert_close(a,b,atol=2e-3,rtol=2e-3)
     assert all(a.argmax().item() == b.argmax().item() for a,b in zip(reference,actual))
-    from torch.utils.flop_counter import FlopCounterMode
     with torch.no_grad(), FlopCounterMode(display=False) as counter:
         model(samples[0])
     flops = counter.get_total_flops()

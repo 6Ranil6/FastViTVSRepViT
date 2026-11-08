@@ -1,6 +1,9 @@
 import hashlib
 import tarfile
 import urllib.request
+
+from scipy.io import loadmat
+
 from .core import DATA, ROOT, sha256, write_json
 
 FILES = {
@@ -27,7 +30,6 @@ def main():
         manifest[name] = {'source': url, 'md5': expected, 'sha256': sha256(path)}
     with tarfile.open(DATA / '102flowers.tgz') as archive:
         archive.extractall(DATA, filter='data')
-    from scipy.io import loadmat
     splits = loadmat(DATA / 'setid.mat')
     sets = [set(splits[k].reshape(-1).tolist()) for k in ('trnid', 'valid', 'tstid')]
     assert [len(x) for x in sets] == [1020, 1020, 6149]

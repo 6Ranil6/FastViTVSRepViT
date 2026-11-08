@@ -1,5 +1,10 @@
 import csv
 from statistics import mean, stdev
+
+import matplotlib
+import matplotlib.pyplot as plt
+from matplotlib.ticker import PercentFormatter
+
 from .core import *
 
 SEEDS = (42, 43, 44)
@@ -25,10 +30,7 @@ def seed_summary(rows):
     return summary
 
 def main():
-    import matplotlib
     matplotlib.use('Agg')
-    import matplotlib.pyplot as plt
-    from matplotlib.ticker import PercentFormatter
     rows=[]
     histories = {}
     validation_fig, validation_ax = plt.subplots(figsize=(9, 5))

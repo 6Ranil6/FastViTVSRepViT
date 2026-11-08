@@ -7,6 +7,7 @@ import torch
 import timm
 from PIL import Image
 from scipy.io import loadmat
+from sklearn.metrics import accuracy_score, confusion_matrix, f1_score
 from torch.utils.data import Dataset
 from torchvision import transforms as T
 from torchvision.transforms import InterpolationMode
@@ -79,7 +80,6 @@ def load_model(checkpoint):
     return model.eval(), ckpt
 
 def metrics(y, pred):
-    from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
     cm = confusion_matrix(y, pred, labels=list(range(NUM_CLASSES)))
     present = cm.sum(1) > 0
     return {'accuracy': float(accuracy_score(y, pred)),

@@ -2,7 +2,6 @@
 import argparse
 import csv
 from collections import defaultdict
-from pathlib import Path
 import numpy as np
 from .core import ROOT
 
@@ -24,16 +23,20 @@ def read_run(path):
 def main():
     p=argparse.ArgumentParser();p.add_argument('csvs',nargs='+');args=p.parse_args()
     groups=defaultdict(list)
+    protocols = set()
     for path in args.csvs:
         for model,result,meta in read_run(path):
+            protocols.add((meta.get('benchmark_protocol', 'single_image'), meta['measurements']))
             groups[(meta['device'],model,meta['threads'],meta[model])].append(result)
-    out=ROOT/'runs/report';out.mkdir(parents=True,exist_ok=True)
+    if len(protocols) > 1:
+        p.error('Соберите сводки отдельно для CSV с разными протоколами замера.')
+    out = ROOT / 'mobile_comparison.csv'
     columns=['device','model','threads','sha256','series','p50_mean_ms','p50_std_ms','p95_mean_ms','subset_accuracy','max_thermal_status']
-    with open(out/'mobile_comparison.csv','w') as f:
+    with out.open('w', newline='') as f:
         writer=csv.DictWriter(f,fieldnames=columns);writer.writeheader()
         for (device,model,threads,digest),runs in sorted(groups.items()):
             p50=[r['p50_ms'] for r in runs]
             writer.writerow(dict(device=device,model=model,threads=threads,sha256=digest,series=len(runs),p50_mean_ms=np.mean(p50),p50_std_ms=np.std(p50,ddof=1) if len(runs)>1 else '',p95_mean_ms=np.mean([r['p95_ms'] for r in runs]),subset_accuracy=np.mean([r['subset_accuracy'] for r in runs]),max_thermal_status=max(r['thermal_after'] for r in runs)))
-    print(out/'mobile_comparison.csv')
+    print(out)
 
 if __name__=='__main__':main()
